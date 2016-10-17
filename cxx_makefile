@@ -1,8 +1,13 @@
 # Compiler configurations
 CXX=g++
 
-CXXFLAGS=-Og -Isrc -std=c++11 	#-Ofast -flto
-LDFLAGS=-Og -static 		#-Ofast -flto
+CXXFLAGS=-Og -Isrc -std=c++11
+LDFLAGS=-Og -static   
+
+# Optimization flags
+#CXXFLAGS+=-Ofast -flto
+#LDFLAGS+=-Ofast -flto
+
 
 # Output program
 PROGRAM=a.out

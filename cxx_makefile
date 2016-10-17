@@ -1,0 +1,62 @@
+# Compiler configurations
+CXX=g++
+
+CXXFLAGS=-Og -Isrc -std=c++11 	#-Ofast -flto
+LDFLAGS=-Og -static 		#-Ofast -flto
+
+# Output program
+PROGRAM=a.out
+
+# Source file directory
+SRC_DIR=src/
+
+# Source and dependencies
+SRCS=$(wildcard $(SRC_DIR)*.cpp)
+OBJS=$(patsubst %.cpp, %.o, $(SRCS))
+DEPS=$(patsubst %.cpp, %.d, $(SRCS))
+
+DF=$(SRC_DIR)$(*F)
+
+# Include all dependency targets
+-include $(DEPS)
+
+# Color Scheme
+CL="\033[92m"
+CR="\033[0m"
+
+# Default target
+all: $(PROGRAM)
+
+# Linking
+$(PROGRAM): $(OBJS)
+	@echo $(CL)"Linking into" $(PROGRAM) $(CR)
+	@$(CXX) $(OBJS) $(LDFLAGS) -o $(PROGRAM)
+	@echo $(CL)"Done."$(CR)
+
+# Compiling
+%.o: %.cpp
+	@# Build the dependency file
+	@$(CXX) -MM -MP -MT $(DF).o -MT $(DF).d $(CXXFLAGS) $< > $(DF).d 
+	@# Compile the object file
+	@echo $(CL)"Compiling" $<" => "$@$(CR)
+	@$(CXX) -c $< $(CXXFLAGS) -o $@
+
+# Run target
+run: $(PROGRAM)
+	@# Run configuration here
+
+# Unit testing
+unit: $(PROGRAM)
+	@# Unit testing
+	gdb ./$(PROGRAM)
+
+# Clean target
+clean:
+	@echo $(CL)"Removing object files..."$(CR)
+	@rm -f $(OBJS)
+	@echo $(CL)"Removing dependency files.."$(CR)
+	@rm -f $(DEPS)
+	@echo $(CL)"Removing executable..."$(CR)
+	@rm -f $(PROGRAM)
+	@echo $(CL)"Done."$(CR)
+
